@@ -1,3 +1,5 @@
+const cors = require('cors');
+const path = require('path');
 const express = require('express');
 const socket = require('socket.io');
 
@@ -10,6 +12,11 @@ const server = app.listen(process.env.PORT || 8000, () => {
 const io = socket(server);
 
 const tasks = [];
+
+app.use(express.static(path.join(__dirname, '/client/build')));
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '/client/build/index.html'));
+  });
 
 io.on('connection', (socket) => {
   io.to(socket.id).emit('updateData', tasks)
